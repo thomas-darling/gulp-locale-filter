@@ -183,7 +183,7 @@ interface IPluginConfig
      * True to filter folders whose name exactly matches language codes,
      * otherwise false. Alternatively you may specify the RegExp used for
      * matching, which must contain exactly one capture group, capturing
-     * the locale code. Note that if a folder matching the full locale
+     * the language code. Note that if a folder matching the full locale
      * also exists, that will take precedence.
      * Default is false.
      */
@@ -193,7 +193,7 @@ interface IPluginConfig
      * True to filter files whose name exactly matches language codes,
      * otherwise false. Alternatively you may specify the RegExp used for
      * matching, which must contain exactly one capture group, capturing
-     * the locale code. Note that if a file matching the full locale
+     * the language code. Note that if a file matching the full locale
      * also exists, that will take precedence.
      * Default is false.
      */
@@ -203,7 +203,7 @@ interface IPluginConfig
      * True to filter files whose names are postfixed with a '.' followed
      * by a language code, otherwise false. Alternatively you may specify
      * the RegExp used for matching, which must contain exactly one capture
-     * group, capturing the locale code. Note that if a file or folder
+     * group, capturing the language code. Note that if a file or folder
      * matching the full locale also exists, that will take precedence.
      * Default is false.
      */
