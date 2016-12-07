@@ -29,13 +29,13 @@ export class LocaleMatch
      * @param config The configuration to use.
      * @param localeCode The locale code for which files should be passed through, or undefined to pass through only base files.
      */
-    public constructor(file: util.File, config: ILocaleMatchConfig, localeCode: string)
+    public constructor(file: util.File, config: ILocaleMatchConfig, localeCode?: string)
     {
         this._basePath = file.base;
         this._pathSegments = path.normalize(file.relative).split(path.sep);
         this._config = config;
 
-        const langCode = localeCode ? localeCode.split("-", 1)[0] : null;
+        const langCode = localeCode ? localeCode.split("-", 1)[0] : undefined;
 
         // Remove any file name extension from the last path segment.
         if (!file.isDirectory())
@@ -46,7 +46,7 @@ export class LocaleMatch
             {
                 const extStartIndex = lastSegment.length - ext.length;
 
-                if (extStartIndex > 0 && lastSegment.lastIndexOf(ext) === extStartIndex)
+                if (extStartIndex > 0 && lastSegment.toUpperCase().lastIndexOf(ext.toUpperCase()) === extStartIndex)
                 {
                     this._pathExtension = lastSegment.substring(extStartIndex);
                     break;
@@ -75,13 +75,13 @@ export class LocaleMatch
         {
             const segment = this._pathSegments[i];
             const isDirectory = i === this._pathSegments.length - 1 ? file.isDirectory() : true;
-            const matchLocaleSegment = isDirectory ? this._config.matchLocaleFolders : this._config.matchLocaleFiles;
-            const matchLangSegment = isDirectory ? this._config.matchLanguageFolders : this._config.matchLanguageFiles;
+            const localeSegmentRegExp = isDirectory ? this._config.localeFoldersRegExp : this._config.localeFilesRegExp;
+            const langSegmentRegExp = isDirectory ? this._config.languageFoldersRegExp : this._config.languageFilesRegExp;
 
             let match: RegExpMatchArray|null;
 
             // Is the segment an exact default base name match?
-            if (matchLocaleSegment || matchLangSegment)
+            if (localeSegmentRegExp || langSegmentRegExp)
             {
                 if (segment === this._config.defaultBaseName)
                 {
@@ -89,8 +89,8 @@ export class LocaleMatch
                     this._matchIndex = i;
                     this._matchCode = null;
                     this._isBestMatch = localeCode == null || (
-                        (!matchLocaleSegment || !this.pathExists(i, localeCode, isDirectory)) &&
-                        (!matchLangSegment || !this.pathExists(i, langCode as string, isDirectory))
+                        (!localeSegmentRegExp || !this.pathExists(i, localeCode, isDirectory)) &&
+                        (!langSegmentRegExp || !this.pathExists(i, langCode as string, isDirectory))
                     );
 
                     break;
@@ -98,9 +98,9 @@ export class LocaleMatch
             }
 
             // Is the segment an exact locale match?
-            if (matchLocaleSegment)
+            if (localeSegmentRegExp)
             {
-                if (match = segment.match(/^([a-z]{2}(?:-[a-zA-Z]{4})?-[a-zA-Z]{2})$/))
+                if (match = segment.match(localeSegmentRegExp))
                 {
                     const matchSegment =
                         !this._config.matchOnlyIfBaseNameExists ||
@@ -119,9 +119,9 @@ export class LocaleMatch
             }
 
             // Is the segment an exact language match?
-            if (matchLangSegment)
+            if (langSegmentRegExp)
             {
-                if (match = segment.match(/^([a-z]{2})$/))
+                if (match = segment.match(langSegmentRegExp))
                 {
                     const matchSegment =
                         !this._config.matchOnlyIfBaseNameExists ||
@@ -133,7 +133,7 @@ export class LocaleMatch
                         this._matchIndex = i;
                         this._matchCode = match[1];
                         this._isBestMatch =
-                            this._matchCode == langCode &&
+                            localeCode != null && this._matchCode === langCode &&
                             (localeCode.length === 2 || !this.pathExists(i, localeCode, isDirectory));
 
                         break;
@@ -142,9 +142,9 @@ export class LocaleMatch
             }
 
             // Is the segment a locale postfix match?
-            if (this._config.matchLocalePostfixes)
+            if (this._config.localePostfixesRegExp)
             {
-                if (match = segment.match(/\.([a-z]{2}(?:-[a-zA-Z]{4})?-[a-zA-Z]{2})$/))
+                if (match = segment.match(this._config.localePostfixesRegExp))
                 {
                     const matchSegment =
                         !this._config.matchOnlyIfBaseNameExists ||
@@ -163,9 +163,9 @@ export class LocaleMatch
             }
 
             // Is the segment a language postfix match?
-            if (this._config.matchLanguagePostfixes)
+            if (this._config.languagePostfixesRegExp)
             {
-                if (match = segment.match(/\.([a-z]{2})$/))
+                if (match = segment.match(this._config.languagePostfixesRegExp))
                 {
                     const matchSegment =
                         !this._config.matchOnlyIfBaseNameExists ||
@@ -177,7 +177,7 @@ export class LocaleMatch
                         this._matchIndex = i;
                         this._matchCode = match[1];
                         this._isBestMatch =
-                            this._matchCode === langCode &&
+                            localeCode != null && this._matchCode === langCode &&
                             (localeCode.length === 2 || !this.pathExists(i, `${segment.substring(0, segment.length - 3)}.${localeCode}`, isDirectory));
 
                         break;
@@ -190,7 +190,7 @@ export class LocaleMatch
 
             if (localeCode != null)
             {
-                if (this._config.matchLocalePostfixes && localeCode.length > 2)
+                if (this._config.localePostfixesRegExp && localeCode.length > 2)
                 {
                     // Would postfixing the segment with the locale produce a better match?
                     if (this.pathExists(i, `${segment}.${localeCode}`, isDirectory))
@@ -201,7 +201,7 @@ export class LocaleMatch
                     }
                 }
 
-                if (this._config.matchLanguagePostfixes)
+                if (this._config.languagePostfixesRegExp)
                 {
                     // Would postfixing the segment with the language produce a better match?
                     if (this.pathExists(i, `${segment}.${langCode}`, isDirectory))

@@ -9,63 +9,87 @@ export const pluginName = "gulp-locale-filter";
 export interface IPluginConfig
 {
     /**
-     * True to filter folders whose name exactly matches locale codes, otherwise false.
+     * True to filter folders whose name exactly matches locale codes,
+     * otherwise false. Alternatively you may specify the RegExp used for
+     * matching, which must contain exactly one capture group, capturing
+     * the locale code.
      * Default is true.
      */
-    matchLocaleFolders?: boolean;
+    matchLocaleFolders?: boolean|RegExp;
 
     /**
-     * True to filter files whose name exactly matches locale codes, otherwise false.
+     * True to filter files whose name exactly matches locale codes,
+     * otherwise false. Alternatively you may specify the RegExp used for
+     * matching, which must contain exactly one capture group, capturing
+     * the locale code.
      * Default is true.
      */
-    matchLocaleFiles?: boolean;
+    matchLocaleFiles?: boolean|RegExp;
 
     /**
-     * True to filter files whose names are postfixed with a '.' followed by a locale code, otherwise false.
+     * True to filter files whose names are postfixed with a '.' followed
+     * by a locale code, otherwise false. Alternatively you may specify the
+     * RegExp used for matching, which must contain exactly one capture
+     * group, capturing the locale code.
      * Default is true.
      */
-    matchLocalePostfixes?: boolean;
+    matchLocalePostfixes?: boolean|RegExp;
 
     /**
-     * True to filter folders whose name exactly matches language codes, otherwise false.
-     * Note that if a folder matching the full locale also exists, that will take precedence.
+     * True to filter folders whose name exactly matches language codes,
+     * otherwise false. Alternatively you may specify the RegExp used for
+     * matching, which must contain exactly one capture group, capturing
+     * the locale code. Note that if a folder matching the full locale
+     * also exists, that will take precedence.
      * Default is false.
      */
-    matchLanguageFolders?: boolean;
+    matchLanguageFolders?: boolean|RegExp;
 
     /**
-     * True to filter files whose name exactly matches language codes, otherwise false.
-     * Note that if a file matching the full locale also exists, that will take precedence.
+     * True to filter files whose name exactly matches language codes,
+     * otherwise false. Alternatively you may specify the RegExp used for
+     * matching, which must contain exactly one capture group, capturing
+     * the locale code. Note that if a file matching the full locale
+     * also exists, that will take precedence.
      * Default is false.
      */
-    matchLanguageFiles?: boolean;
+    matchLanguageFiles?: boolean|RegExp;
 
     /**
-     * True to filter files whose names are postfixed with a '.' followed by a language code, otherwise false.
-     * Note that if a file or folder matching the full locale also exists, that will take precedence.
+     * True to filter files whose names are postfixed with a '.' followed
+     * by a language code, otherwise false. Alternatively you may specify
+     * the RegExp used for matching, which must contain exactly one capture
+     * group, capturing the locale code. Note that if a file or folder
+     * matching the full locale also exists, that will take precedence.
      * Default is false.
      */
-    matchLanguagePostfixes?: boolean;
+    matchLanguagePostfixes?: boolean|RegExp;
 
     /**
-     * True to only match files and folders if a corresponding base file or folder exist, otherwise false.
-     * Note that if enabled, locale files and folders will only be matched if a default base name is specified.
+     * True to only match files and folders if a corresponding base file or
+     * folder exist, otherwise false. Note that if enabled, locale files and
+     * folders will only be matched if a default base name is specified.
      * Default is false.
      */
     matchOnlyIfBaseNameExists?: boolean;
 
     /**
-     * The base name to look for when matching locale or language files and folders, with the requirement that
-     * the base name must also exist, or when renaming such files and folders to their base name.
-     * Default is undefined, meaning that such files and folders will not be renamed, and if the base name must
+     * The base name to look for when matching files and folders whose name
+     * exactly matches a locale or language code, with the requirement that
+     * the base name must also exist, or when renaming such files and folders
+     * to their base name.
+     * Default is undefined, meaning that such files and folders will not be
+     * renamed, and if the base name must
      * exist, not matched.
      */
     defaultBaseName?: string;
 
     /**
-     * The list of expected file name extensions. By default, everything after the last '.' is
-     * assumed to be the file name extension, but in some cases, such as '.js.map' files, this could lead
-     * to incorrect locale or language matches. To avoid this, any such extensions must be listed here.
+     * The list of expected file name extensions. By default, everything
+     * after the last '.' is assumed to be the file name extension, but in
+     * some cases, such as '.js.map' files, this could lead to incorrect
+     * locale or language matches. To avoid this, any such extensions must
+     * be listed here.
      * Default is [].
      */
     fileNameExtensions?: string[];
@@ -89,7 +113,7 @@ export interface IPluginConfig
 export class PluginConfig implements ILocaleMatchConfig
 {
     /**
-     * Creates a new instance of the FilterCommandConfig type.
+     * Creates a new instance of the PluginConfig type.
      * @param config The config object from which the instance should be created.
      */
     public constructor(config?: IPluginConfig)
@@ -97,23 +121,23 @@ export class PluginConfig implements ILocaleMatchConfig
         if (config == null)
             return;
 
-        if (config.matchLocaleFolders != null)
-            this.matchLocaleFolders = config.matchLocaleFolders;
+        if (config.matchLocaleFolders !== true)
+            this.localeFoldersRegExp = config.matchLocaleFolders || undefined;
 
-        if (config.matchLocaleFiles != null)
-            this.matchLocaleFiles = config.matchLocaleFiles;
+        if (config.matchLocaleFiles !== true)
+            this.localeFilesRegExp = config.matchLocaleFiles || undefined;
 
-        if (config.matchLocalePostfixes != null)
-            this.matchLocalePostfixes = config.matchLocalePostfixes;
+        if (config.matchLocalePostfixes !== true)
+            this.localePostfixesRegExp = config.matchLocalePostfixes || undefined;
 
-        if (config.matchLanguageFolders != null)
-            this.matchLanguageFolders = config.matchLanguageFolders;
+        if (config.matchLanguageFolders !== true)
+            this.languageFoldersRegExp = config.matchLanguageFolders || undefined;
 
-        if (config.matchLanguageFiles != null)
-            this.matchLanguageFiles = config.matchLanguageFiles;
+        if (config.matchLanguageFiles !== true)
+            this.languageFilesRegExp = config.matchLanguageFiles || undefined;
 
-        if (config.matchLanguagePostfixes!= null)
-            this.matchLanguagePostfixes = config.matchLanguagePostfixes;
+        if (config.matchLanguagePostfixes !== true)
+            this.languagePostfixesRegExp = config.matchLanguagePostfixes || undefined;
 
         if (config.matchOnlyIfBaseNameExists!= null)
             this.matchOnlyIfBaseNameExists = config.matchOnlyIfBaseNameExists;
@@ -132,76 +156,77 @@ export class PluginConfig implements ILocaleMatchConfig
     }
 
     /**
-     * True to filter folders whose name exactly matches locale codes, otherwise false.
-     * Default is true.
+     * The RegExp used when matching folders whose name exactly matches
+     * locale codes, or undefined to not match.
      */
-    public matchLocaleFolders: boolean = true;
+    public localeFoldersRegExp?: RegExp = /^([a-z]{2}(?:-[a-zA-Z]{4})?-[a-zA-Z]{2})$/;
 
     /**
-     * True to filter files whose name exactly matches locale codes, otherwise false.
-     * Default is true.
+     * The RegExp used when matching files whose name exactly matches
+     * locale codes, or undefined to not match.
      */
-    public matchLocaleFiles: boolean = true;
+    public localeFilesRegExp?: RegExp = /^([a-z]{2}(?:-[a-zA-Z]{4})?-[a-zA-Z]{2})$/;
 
     /**
-     * True to filter files whose names are postfixed with a '.' followed by a locale code, otherwise false.
-     * Default is true.
+     * The RegExp used when matching files whose names are postfixed with
+     * a locale code, or undefined to not match.
      */
-    public matchLocalePostfixes: boolean = true;
+    public localePostfixesRegExp?: RegExp = /\.([a-z]{2}(?:-[a-zA-Z]{4})?-[a-zA-Z]{2})$/;
 
     /**
-     * True to filter folders whose name exactly matches language codes, otherwise false.
-     * Note that if a folder matching the full locale also exists, that will take precedence.
-     * Default is false.
+     * The RegExp used when matching folders whose name exactly matches
+     * language codes, or undefined to not match. Note that if a folder
+     * matching the full locale also exists, that will take precedence.
      */
-    public matchLanguageFolders: boolean = false;
+    public languageFoldersRegExp?: RegExp = /^([a-z]{2})$/;
 
     /**
-     * True to filter files whose name exactly matches language codes, otherwise false.
-     * Note that if a file matching the full locale also exists, that will take precedence.
-     * Default is false.
+     * The RegExp used when matching files whose name exactly matches
+     * language codes, or undefined to not match. Note that if a file
+     * matching the full locale also exists, that will take precedence.
      */
-    public matchLanguageFiles: boolean = false;
+    public languageFilesRegExp?: RegExp = /^([a-z]{2})$/;
 
     /**
-     * True to filter files whose names are postfixed with a '.' followed by a language code, otherwise false.
-     * Note that if a file or folder matching the full locale also exists, that will take precedence.
-     * Default is false.
+     * The RegExp used when matching files whose names are postfixed with a
+     * language code, or undefined to not match. Note that if a file or folder
+     * matching the full locale also exists, that will take precedence.
      */
-    public matchLanguagePostfixes: boolean = false;
+    public languagePostfixesRegExp?: RegExp = /\.([a-z]{2})$/;
 
     /**
-     * True to only match files and folders if a corresponding base file or folder exist, otherwise false.
-     * Note that if enabled, locale files and folders will only be matched if a default base name is specified.
-     * Default is false.
+     * True to only match files and folders if a corresponding base file or
+     * folder exist, otherwise false. Note that if enabled, locale files and
+     * folders will only be matched if a default base name is specified.
      */
     public matchOnlyIfBaseNameExists: boolean = false;
 
     /**
-     * The base name to look for when matching locale or language files and folders, with the requirement that
-     * the base name must also exist, or when renaming such files and folders to their base name.
-     * Default is undefined, meaning that such files and folders will not be renamed, and if the base name must
-     * exist, not matched.
+     * The base name to look for when matching files and folders whose name
+     * exactly matches a locale or language code, with the requirement that
+     * the base name must also exist, or when renaming such files and folders
+     * to their base name.
+     * If undefined, such files and folders will not be renamed, and if the
+     * base name must exist, not matched.
      */
     public defaultBaseName?: string;
 
     /**
-     * The list of expected file name extensions. By default, everything after the last '.' is
-     * assumed to be the file name extension, but in some cases, such as '.js.map' files, this could lead
-     * to incorrect locale or language matches. To avoid this, any such extensions must be listed here.
-     * Default is [].
+     * The list of expected file name extensions. By default, everything
+     * after the last '.' is assumed to be the file name extension, but in
+     * some cases, such as '.js.map' files, this could lead to incorrect
+     * locale or language matches. To avoid this, any such extensions must
+     * be listed here.
      */
     public fileNameExtensions: string[] = [];
 
     /**
      * True to enable caching of file system lookups, otherwise false.
-     * Default is true.
      */
     public cache: boolean = true;
 
     /**
      * True to enable debug logging, otherwise false.
-     * Default is false.
      */
     public debug: boolean = false;
 }

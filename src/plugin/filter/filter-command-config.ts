@@ -4,13 +4,15 @@
 export interface IFilterCommandConfig
 {
     /**
-     * The locale code for which files should be passed through, or undefined to pass through only base files.
+     * The locale code for which files should be passed through,
+     * or undefined to pass through only base files.
      * Default is undefined.
      */
     localeCode?: string;
 
     /**
-     * True to rename the files that are passed through to their base name, otherwise false.
+     * True to rename the files that are passed through to their
+     * base name, otherwise false.
      * Default is false.
      */
     renameToBaseName?: boolean;
@@ -38,14 +40,14 @@ export class FilterCommandConfig
     }
 
     /**
-     * The locale code for which files should be passed through, or undefined to pass through only base files.
-     * Default is undefined.
+     * The locale code for which files should be passed through,
+     * or undefined to pass through only base files.
      */
     public localeCode: string;
 
     /**
-     * True to rename the files that are passed through to their base name, otherwise false.
-     * Default is false.
+     * True to rename the files that are passed through to their
+     * base name, otherwise false.
      */
     public renameToBaseName: boolean = false;
 }

@@ -18,72 +18,17 @@ var localeFilter = require("../lib/index");
 // The configuration for the 'filter-locale' plugin.
 var pluginConfig =
 {
-    /**
-     * True to filter folders whose name exactly matches locale codes, otherwise false.
-     * Default is true.
-     */
     matchLocaleFolders: true,
-
-    /**
-     * True to filter files whose name exactly matches locale codes, otherwise false.
-     * Default is true.
-     */
     matchLocaleFiles: true,
-
-    /**
-     * True to filter files whose name exactly matches language codes, otherwise false.
-     * Default is false.
-     */
     matchLanguageFiles: true,
-
-    /**
-     * True to filter folders whose name exactly matches language codes, otherwise false.
-     * Default is false.
-     */
     matchLanguageFolders: true,
-
-    /**
-     * True to filter files whose names are postfixed with a '.' followed by a language code, otherwise false.
-     * Default is true.
-     */
     matchLanguagePostfixes: true,
-
-    /**
-     * True to filter files whose names are postfixed with a '.' followed by a locale code, otherwise false.
-     * Default is true.
-     */
     matchLocalePostfixes: true,
-
-    /**
-     * True to only match files and folders if a corresponding base file or folder exist, otherwise false.
-     * Default is false.
-     */
     matchOnlyIfBaseNameExists: true,
-
-    /**
-     * The default base name to use, if renaming a file or folder whose name exactly matches the locale.
-     * Default is undefined, meaning that those files and folders will not be renamed.
-     */
     defaultBaseName: "locale",
-
-    /**
-     * The list of additional, expected file name extensions. By default, everything after the last '.' is assumed to be
-     * the file name extension, but in some cases, such as '.js.map' files, this would lead to incorrect locale or
-     * language matches. To avoid this, any such extensions must be listed here.
-     */
     fileNameExtensions: [".js.map"],
-
-    /**
-     * True to enable caching of file system lookups, otherwise false.
-     * Default is true.
-     */
-    cache: true,
-
-    /**
-     * True to enable debug logging, otherwise false.
-     * Default is false.
-     */
     debug: util.env.debug != null
+    // See 'readme.md' for more options.
 };
 
 /**
