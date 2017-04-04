@@ -9,6 +9,8 @@ import {LocaleMatch} from "../../core/locale-match/locale-match";
 import {PluginConfig, pluginName} from "../plugin-config";
 import {FilterCommandConfig} from "./filter-command-config";
 
+const mapFileCommentRegex = /(?:(\/\/[@#][ \t]+sourceMappingURL=)([^\s'"]+?)([ \t]*)$)|(?:(\/\*[@#][ \t]+sourceMappingURL=)([^\*]+?)([ \t]*\*\/[ \t]*)$)/gm;
+
 /**
  * Represents the command.
  */
@@ -79,6 +81,38 @@ export class FilterCommand
                                 console.log(`${chalk.green("RENAME:")}  ${chalk.magenta(basePath)}`);
                             }
 
+                            const fileNameExt = path.extname(file.path).toLowerCase();
+
+                            // If the file contains a 'sourceMappingURL' comment, update it to reference the renamed map file.
+                            if (fileNameExt === ".js" || fileNameExt === ".css")
+                            {
+                                // Don't support streams.
+                                if (file.isStream())
+                                {
+                                    throw new Error("This plugin command does not support streams.");
+                                }
+
+                                // Process the buffer contents.
+                                if (file.isBuffer())
+                                {
+                                    let contents = file.contents.toString();
+
+                                    contents = contents.replace(mapFileCommentRegex, (match, before, mapFilePath, after) =>
+                                    {
+                                        if (mapFilePath.trim() === `${path.basename(file.path)}.map`)
+                                        {
+                                            return before + `${path.basename(basePath)}.map` + after;
+                                        }
+
+                                        return match;
+                                    });
+
+                                    // Write the localized input file to the destination.
+                                    file.contents = new Buffer(contents);
+                                }
+                            }
+
+                            // Rename the file.
                             file.path = basePath;
                         }
                     }

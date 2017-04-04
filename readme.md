@@ -271,7 +271,8 @@ gulp.task("localize", function ()
         // Get the source files.
         .src("./sources/**")
 
-        // Filter the stream to include only the files relevant for the configured locale.
+        // Filter the stream to include only the files relevant for the
+        // configured locale.
         .pipe(localeFilter(pluginConfig).filter(
         {
             localeCode: targetLocaleCode,
