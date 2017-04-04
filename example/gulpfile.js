@@ -26,7 +26,7 @@ var pluginConfig =
     matchLocalePostfixes: true,
     matchOnlyIfBaseNameExists: true,
     defaultBaseName: "locale",
-    fileNameExtensions: [".js.map"],
+    fileNameExtensions: [".js.map", ".css.map"],
     debug: util.env.debug != null
     // See 'readme.md' for more options.
 };

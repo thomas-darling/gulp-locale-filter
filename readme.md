@@ -231,10 +231,10 @@ interface IPluginConfig
     /**
      * The list of expected file name extensions. By default, everything
      * after the last '.' is assumed to be the file name extension, but in
-     * some cases, such as '.js.map' files, this could lead to incorrect
-     * locale or language matches. To avoid this, any such extensions must
-     * be listed here.
-     * Default is [].
+     * some cases, such as '.js.map' and '.css.map' files, this could lead
+     * to incorrect locale or language matches. To avoid this, any such
+     * extensions must be listed here.
+     * Default is [".js.map", ".css.map"].
      */
     fileNameExtensions?: string[];
 
