@@ -9,7 +9,7 @@ import {LocaleMatch} from "../../core/locale-match/locale-match";
 import {PluginConfig, pluginName} from "../plugin-config";
 import {FilterCommandConfig} from "./filter-command-config";
 
-const mapFileCommentRegex = /(?:(\/\/[@#][ \t]+sourceMappingURL=)([^\s'"]+?)([ \t]*)$)|(?:(\/\*[@#][ \t]+sourceMappingURL=)([^\*]+?)([ \t]*\*\/[ \t]*)$)/gm;
+const mapFileCommentRegex = /(?:(\/\/[@#][ \t]+sourceMappingURL=\/?)([^\s'"]+?)([ \t]*)$)|(?:(\/\*[@#][ \t]+sourceMappingURL=\/?)([^\*]+?)([ \t]*\*\/[ \t]*)$)/gm;
 
 /**
  * Represents the command.
@@ -97,11 +97,13 @@ export class FilterCommand
                                 {
                                     let contents = file.contents.toString();
 
-                                    contents = contents.replace(mapFileCommentRegex, (match, before, mapFilePath, after) =>
+                                    contents = contents.replace(mapFileCommentRegex, (match, ...groups) =>
                                     {
-                                        if (mapFilePath.trim() === `${path.basename(file.path)}.map`)
+                                        const offset = groups[0] != null ? 0 : 3;
+
+                                        if (groups[offset + 1] === `${path.basename(file.path)}.map`)
                                         {
-                                            return before + `${path.basename(basePath)}.map` + after;
+                                            return groups[offset] + `${path.basename(basePath)}.map` + groups[offset + 2];
                                         }
 
                                         return match;
