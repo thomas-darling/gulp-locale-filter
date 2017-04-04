@@ -1,6 +1,6 @@
 {
   "name": "gulp-locale-filter",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Gulp plugin that filters files in the stream based on locale or language codes in the file paths.",
   "keywords": [
     "gulp",
