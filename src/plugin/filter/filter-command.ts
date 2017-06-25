@@ -55,7 +55,7 @@ export class FilterCommand
 
                 if (_this._config.debug)
                 {
-                    console.log(`\nPROCESS: ${chalk.magenta(file.path)}\n|`);
+                    console.log(`\nProcessing ${chalk.magenta(file.path)}\n|`);
                 }
 
                 // Create the locale file path instance needed for inspecting and renaming the current file path.
@@ -78,7 +78,7 @@ export class FilterCommand
                         {
                             if (_this._config.debug && file.path !== basePath)
                             {
-                                console.log(`${chalk.green("RENAME:")}  ${chalk.magenta(basePath)}`);
+                                console.log(`${chalk.green("Rename to ")}${chalk.magenta(basePath)}`);
                             }
 
                             const fileNameExt = path.extname(file.path).toLowerCase();
@@ -121,7 +121,7 @@ export class FilterCommand
 
                     if (_this._config.debug)
                     {
-                        console.log(chalk.green("PUSH"));
+                        console.log(chalk.green("Included"));
                     }
 
                     // Push the file back into the stream.
@@ -134,7 +134,7 @@ export class FilterCommand
                 {
                     if (_this._config.debug)
                     {
-                        console.log(chalk.red("DROP"));
+                        console.log(chalk.red("Excluded"));
                     }
 
                     // Notify stream engine that we are done with this file.
@@ -144,7 +144,7 @@ export class FilterCommand
             catch (error)
             {
                 // Notify stream engine that an error occurred.
-                callback(new util.PluginError(pluginName, `Error while processing file ${chalk.magenta(relativeFilePath)}: ${error.message}`));
+                callback(new util.PluginError(pluginName, `Error while processing file ${chalk.magenta(relativeFilePath)}:\n${error.message}`));
             }
         },
         function (callback: () => void)

@@ -5,7 +5,8 @@
  * 2. Execute the command: gulp --locale en-us
  *
  * This will execute all the tasks in the correct order, producing output in the 'artifacts' folder.
- * You may optionally specify '--debug' to enable logging, or other locales, to see how they affect the output.
+ * You can try specifying another locale, to see how that affects the output.
+ * You may optionally specify '--debug' to enable debug logging.
  * --------------------------------------------------------------------------------------------------------------------
  */
 

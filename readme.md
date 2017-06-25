@@ -1,5 +1,10 @@
 ﻿gulp-locale-filter
 ===============
+
+[![Version](https://img.shields.io/npm/v/gulp-locale-filter.svg)](https://www.npmjs.org/package/gulp-locale-filter)
+[![Downloads](https://img.shields.io/npm/dm/gulp-locale-filter.svg)](https://www.npmjs.com/package/gulp-locale-filter)
+[![Try on RunKit](https://badge.runkitcdn.com/gulp-locale-filter.svg)](https://runkit.com/npm/gulp-locale-filter)
+
 Gulp plugin that filters the files in the stream based on locale or language codes in the file paths, optionally
 renaming the files to their base name, without the code. Use this to e.g. localize the output of a build process,
 by filtering to only the file variants that are relevant for the target locale.
@@ -20,10 +25,14 @@ in the file paths.
 
 You may also want to look at the plugins:
 
-* [gulp-translate](https://www.npmjs.com/package/gulp-translate) for extracting and injecting localizable content in HTML templates.
+* [gulp-tree-filter](https://www.npmjs.com/package/gulp-tree-filter) for filtering files based using include and exclude globs defined in config files located within the folder tree.
+Use this to e.g. prevent localizable content from being extracted from unfinished features.
 
-* [gulp-replace](https://www.npmjs.com/package/gulp-replace) for replacing text content in files, for example by replacing `{{locale}}` in templates and CSS
-  files with the actual target locale code.
+* [gulp-locale-filter](https://www.npmjs.com/package/gulp-locale-filter) for filtering files based on locale or language codes in the file path.
+Use this to e.g. include only the locale config files that are relevant for the target locale when creating a localized build.
+
+* [gulp-replace](https://www.npmjs.com/package/gulp-replace) for replacing text content in files.
+Use this to e.g. replace placeholder such as `{{locale}}` in templates and CSS files with the actual target locale code when creating a localized build.
 
 ## Examples
 
@@ -72,27 +81,27 @@ bar.html // this is actually 'bar.da-dk.html', renamed to its base name
 
 Given a `sources` folder containing locale-specific subfolders:
 ```
-foo
+- foo
     foo.html
-da-dk
+- da-dk
     bar.html
-en-us
+- en-us
     bar.html
 ```
 
 The `artifacts/da-dk` folder would, after running the task, contain only the files:
 ```
-foo
+- foo
     foo.html
-da-dk
+- da-dk
     bar.html
 ```
 
 Or, if the `renameToBaseName` plugin option is enabled and `defaultBaseName` is set to "locale":
 ```
-foo
+- foo
     foo.html
-locale // this is actually 'da-dk', renamed to its default base name
+- locale // this is actually 'da-dk', renamed to its default base name
     bar.html
 ```
 
